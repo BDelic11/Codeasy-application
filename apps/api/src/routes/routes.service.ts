@@ -32,8 +32,8 @@ export class RoutesService {
         ),
     ); // Extract `data`
 
-    // const cachedRoutes = await this.cacheManager.get('routes');
-    // console.log('Fetched and cached routes:', cachedRoutes);
+    // const cachedRoutes: Route[] = await this.cacheManager.get('routes');
+    // console.log('Number of routes', cachedRoutes.length);
 
     return routes;
   }
