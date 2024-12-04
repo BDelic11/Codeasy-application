@@ -11,10 +11,6 @@ import geojsonRbush from 'geojson-rbush';
 
 // Helpers
 import { convertToGeoJSON } from './helpers/geojson.helpers';
-// import {
-//   isBoxPointInBoundingBox,
-//   isPointInBoundingBox,
-// } from './helpers/bounding-box.helpers';
 import { Route } from 'src/routes/entities/route.entity';
 import { Point } from './entities/point.entity';
 import { RoutesService } from 'src/routes/routes.service';
@@ -95,76 +91,11 @@ export class PointsService {
   }
 
   private fillTreeWithBoundingBox(
-    // newBoundingBox: Feature<Polygon>,
     geoJSONPoints: FeatureCollection<GeoJSONPoint>,
   ) {
     this.index.clear();
     this.index.load(geoJSONPoints);
   }
-
-  // private updateTreeWithBoundingBox(
-  //   newBoundingBox: Feature<Polygon>,
-  //   geoJSONPoints: FeatureCollection<GeoJSONPoint>,
-  // ) {
-  //   if (this.isNewBoxWider(newBoundingBox, this.currentBoundingBox)) {
-  //     geoJSONPoints.features.forEach((feature) => {
-  //       if (isPointInBoundingBox(feature, newBoundingBox)) {
-  //         this.index.insert(feature);
-  //       }
-  //     });
-  //     console.log('Adding points from index:');
-  //   } else {
-  //     // If the new bounding box is smaller, remove points outside the new bounding box
-  //     const pointsInCurrentBox = this.index.search(this.currentBoundingBox!);
-
-  //     console.log('pointsInCurrentBox', pointsInCurrentBox.features.length);
-  //     // Remove points outside the new bounding box
-  //     pointsInCurrentBox.features.forEach((feature) => {
-  //       if (!isBoxPointInBoundingBox(feature, newBoundingBox)) {
-  //         this.index.remove(feature);
-  //       }
-  //       console.log('Removing points from index:', feature.geometry);
-  //     });
-  //   }
-  // }
-
-  /**
-   * Helper function to determine if the new bounding box is wider than the current one
-   */
-  // private isNewBoxWider(
-  //   newBoundingBox: Feature<Polygon>,
-  //   currentBoundingBox: Feature<Polygon> | null,
-  // ): boolean {
-  //   if (!currentBoundingBox) return true;
-
-  //   const [newMinLng, newMinLat, newMaxLng, newMaxLat] =
-  //     this.getBoundingBoxEdges(newBoundingBox);
-  //   const [currMinLng, currMinLat, currMaxLng, currMaxLat] =
-  //     this.getBoundingBoxEdges(currentBoundingBox);
-
-  //   return (
-  //     newMinLng <= currMinLng &&
-  //     newMinLat <= currMinLat &&
-  //     newMaxLng >= currMaxLng &&
-  //     newMaxLat >= currMaxLat
-  //   );
-  // }
-
-  /**
-   * Helper function to extract bounding box edges (min/max lng/lat)
-   */
-  // private getBoundingBoxEdges(boundingBox: Feature<Polygon>): number[] {
-  //   const coordinates = boundingBox.geometry.coordinates[0];
-  //   const lats = coordinates.map((coord) => coord[1]);
-  //   const lngs = coordinates.map((coord) => coord[0]);
-
-  //   return [
-  //     Math.min(...lngs), // Min longitude
-  //     Math.min(...lats), // Min latitude
-  //     Math.max(...lngs), // Max longitude
-  //     Math.max(...lats), // Max latitude
-  //   ];
-  // }
 
   private extractAllPointsFromRoutes(routes: Route[]): Point[] {
     const points: Point[] = [];

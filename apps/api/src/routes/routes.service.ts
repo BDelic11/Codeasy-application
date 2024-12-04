@@ -29,7 +29,7 @@ export class RoutesService {
     );
 
     if (!routes) {
-      throw new BadRequestException('No routes found');
+      throw new BadRequestException('Error in fetching routes from api');
     }
     return routes;
   }
