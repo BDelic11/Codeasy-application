@@ -1,6 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
-// import { CreateRouteDto } from './dto/create-route.dto';
-// import { UpdateRouteDto } from './dto/update-route.dto';
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { Route } from './entities/route.entity';
 import { AxiosResponse } from 'axios';
@@ -9,7 +7,6 @@ import { map, tap } from 'rxjs/operators';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { FindNearestRoutesDto } from './dto/find-nearest.dto';
-import { NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class RoutesService {
@@ -26,15 +23,14 @@ export class RoutesService {
         .pipe(
           map((response: AxiosResponse<Route[]>) => response.data),
           tap((data) => {
-            // Cache the fetched data
-            this.cacheManager.set('routes', data, 36000); // Cache for 1 hour
+            this.cacheManager.set('routes', data, 36000);
           }),
         ),
-    ); // Extract `data`
+    );
 
-    // const cachedRoutes: Route[] = await this.cacheManager.get('routes');
-    // console.log('Number of routes', cachedRoutes.length);
-
+    if (!routes) {
+      throw new BadRequestException('No routes found');
+    }
     return routes;
   }
 
@@ -47,7 +43,6 @@ export class RoutesService {
       routes = await this.fetchAllRoutes();
     }
 
-    // Calculate distances based on centroid of points
     const distances = routes.map((route: Route) => {
       const centroid = this.calculateCentroid(route.pointsOnRoutes);
       const computedDistance = this.haversineDistance(
@@ -59,7 +54,6 @@ export class RoutesService {
       return { ...route, computedDistance };
     });
 
-    // Sort by distance and return the nearest routes
     distances.sort((a, b) => a.computedDistance - b.computedDistance);
     return distances.slice(0, count);
   }

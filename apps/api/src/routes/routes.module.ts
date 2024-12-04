@@ -7,5 +7,6 @@ import { HttpModule } from '@nestjs/axios';
   imports: [HttpModule],
   controllers: [RoutesController],
   providers: [RoutesService],
+  exports: [RoutesService],
 })
 export class RoutesModule {}

@@ -1,11 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { RoutesService } from './routes.service';
-import { CreateRouteDto } from './dto/create-route.dto';
-import { UpdateRouteDto } from './dto/update-route.dto';
-import { AxiosResponse } from 'axios';
-import { Observable } from 'rxjs';
 import { Route } from './entities/route.entity';
-import { FindNearestRoutesDto } from './dto/find-nearest.dto';
 
 @Controller('routes')
 export class RoutesController {
