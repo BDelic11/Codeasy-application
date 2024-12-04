@@ -51,23 +51,15 @@ This repository contains a **Tourist Guide Application**, developed as part of a
 
 - Handles API logic, including fetching and processing data from the external API (`https://chat.codeasy.com/api/job-application`).
 - Implements GeoJSON operations such as filtering points within a bounding box and calculating distances.
+- Using R-Bush for optimized searching of points inside viewport (`https://github.com/mourner/rbush`)
+- In memory caching in Nest.js for scalability
 
 ### **Frontend: Next.js**
 
-- Integrates with **Mapbox** for interactive map visualization.
+- Integrates with **MapLibre** for interactive map visualization. (`https://visgl.github.io/react-map-gl/docs/get-started`)
 - Communicates with the backend to fetch and display nearby routes and points in real time.
 
 ---
-
-## **Setup Instructions**
-
-### **Backend**
-
-1. **Clone the Backend Repository:**
-   ```bash
-   git clone https://github.com/your-username/nest-backend.git
-   cd nest-backend
-   ```
 
 # Turborepo starter
 
