@@ -79,11 +79,11 @@ This repository contains a **Tourist Guide Application**, developed as part of a
 
 ---
 
-# How to use
+### How to use
 
--Clone the repository
--npm install inside "Codeasy"
--npm run dev
+- Clone the repository
+- npm install inside "Codeasy"
+- npm run dev
 
 # Turborepo starter
 
