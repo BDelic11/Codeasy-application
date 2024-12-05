@@ -71,21 +71,13 @@ This repository contains a **Tourist Guide Application**, developed as part of a
 
 # How to use
 
-Clone the repository
-npm install inside "Codeasy"
-npm run dev
+-Clone the repository
+-npm install inside "Codeasy"
+-npm run dev
 
 # Turborepo starter
 
-This is an official starter Turborepo.
-
-## Using this example
-
-Run the following command:
-
-```sh
-npx create-turbo@latest
-```
+- I used turborepo starter for this app
 
 ## What's inside?
 
@@ -118,16 +110,6 @@ To develop all apps and packages, run the following command:
 cd Codeasy
 npm run dev
 ```
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd Codeasy
-npm run build
-```
-
 
 
 ## Useful Links
