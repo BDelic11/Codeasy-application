@@ -1,5 +1,5 @@
 "use client";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 //Components
 import GeoLocationMap from "./geolocation-map";
@@ -9,32 +9,30 @@ import { useGetNearestRoutes } from "../../api/routes/useGetNearestRoutes";
 import { Route } from "../../../api/src/routes/entities/route.entity";
 
 const MapSection = () => {
-  const [userLatitude, setUserLatitude] = useState<string>("");
-  const [userLongitude, setUserLongitude] = useState<string>("");
-  const [numberOfRoutes, setNumberOfRoutes] = useState(10);
+  const [userLatitude, setUserLatitude] = useState<number>(0);
+  const [userLongitude, setUserLongitude] = useState<number>(0);
+  // left as 10 for now, but can be changed to any number wiht set number of routes
+  const [numberOfRoutes, setNumberOfRoutes] = useState(80);
   const [selectedLocation, setSelectedLocation] = useState<{
     latitude: number;
     longitude: number;
   }>({ latitude: Number(userLatitude), longitude: Number(userLongitude) });
 
   useEffect(() => {
-    // Fetch user's geolocation on component mount
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude: userLat, longitude: userLon } = position.coords;
-        setUserLatitude(String(userLat));
-        setUserLongitude(String(userLon));
-        console.log("User location:", { userLat, userLon });
-      },
-      (error) => {
-        console.error("Error fetching geolocation:", error);
-      }
-    );
+    navigator.geolocation.getCurrentPosition((position) => {
+      const { latitude: userLat, longitude: userLon } = position.coords;
+      setUserLatitude(userLat);
+      setUserLongitude(userLon);
+    });
   }, []);
 
-  const { data: nearestRoutes, isLoading } = useGetNearestRoutes({
+  const {
+    data: nearestRoutes,
+    isLoading,
+    error,
+  } = useGetNearestRoutes({
     lat: userLatitude,
-    lon: userLongitude,
+    lng: userLongitude,
     count: numberOfRoutes,
   });
 
@@ -47,13 +45,22 @@ const MapSection = () => {
     });
   };
 
+  if (error) {
+    return (
+      <div>
+        <p>error: {String(error)}</p>
+      </div>
+    );
+  }
+
   return (
     <>
-      <section className="flex flex-col w-1/3 p-10 ">
+      <section className="flex flex-col w-1/3 p-10  ">
         <p className=" text-gray-800 font-bold text-left text-3xl md:text-3xl  ">
-          Closest routes near you
+          Closest routes near you ({numberOfRoutes})
         </p>
-        <div className="flex flex-row justify-around align-middle gap-4 my-6">
+
+        <div className="flex flex-row justify-around align-middle gap-4 my-6 ">
           <div className="flex flex-row justify-left align-middle gap-2 text-base font-normal ">
             <div className="rounded-full bg-blue-500 w-3 h-3 my-auto"></div>
             <p>User Location</p>
@@ -64,8 +71,8 @@ const MapSection = () => {
           </div>
         </div>
         {!isLoading && nearestRoutes ? (
-          <div className="flex flex-col w-full pt-4 h-[400px]  overflow-hidden overflow-y-auto">
-            {nearestRoutes.map((route) => (
+          <div className="flex flex-col w-full pt-4 h-[400px]  overflow-y-auto overflow-visible ">
+            {nearestRoutes?.map((route) => (
               <div key={route.id} className="flex flex-row w-full">
                 <button
                   onClick={() => handleOnClick(route)}
@@ -88,9 +95,7 @@ const MapSection = () => {
       {!isLoading && nearestRoutes ? (
         <GeoLocationMap
           lat={userLatitude}
-          setLatitude={setUserLatitude}
           lon={userLongitude}
-          setLongitude={setUserLongitude}
           routes={nearestRoutes}
           selectedLocation={selectedLocation}
         />

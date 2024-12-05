@@ -1,20 +1,15 @@
-import { IsNumber, IsOptional, IsPositive } from 'class-validator';
+import { IsLatitude, IsLongitude, IsNumber, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class FindNearestRoutesDto {
-  @Type(() => Number)
-  @IsNumber()
-  @IsPositive()
+  @IsLatitude({ message: 'Latitude must be a number between -90 and 90' })
   lat: number;
 
-  @Type(() => Number)
-  @IsNumber()
-  @IsPositive()
-  lon: number;
+  @IsLongitude({ message: 'Longitud must be a number between -180 and 180' })
+  lng: number;
 
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
-  @IsPositive()
   count?: number;
 }

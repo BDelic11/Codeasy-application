@@ -1,37 +1,36 @@
 "use client";
-import { Route } from "../../../../api/src/routes/entities/route.entity";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Map } from "react-map-gl/maplibre";
-import { Marker, Layer, LineLayer, Source } from "react-map-gl/maplibre";
+import { Marker } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl from "maplibre-gl";
 import { useGetViewportPoints } from "../../../api/points/useGetViewportPoints";
 
+interface Bounds {
+  lat1: number;
+  lng1: number;
+  lat2: number;
+  lng2: number;
+}
+
 export default function ViewportPoints() {
   const initialZoom = 2;
   const minZoomOut = 0;
-  const [bounds, setBounds] = useState<any>({
-    lat1: "50.0",
-    lng1: "10.0",
-    lat2: "71.0",
-    lng2: "2.0",
+  const [bounds, setBounds] = useState<Bounds>({
+    lat1: 50.0,
+    lng1: 10.0,
+    lat2: 71.0,
+    lng2: 2.0,
   });
-  const [userLatitude, setUserLatitude] = useState<string>("20");
-  const [userLongitude, setUserLongitude] = useState<string>("2");
   const [zoom, setZoom] = useState<number>(initialZoom);
 
   const geoControlRef = useRef<maplibregl.GeolocateControl>();
   const mapRef = useRef<any>(null);
 
   const { data: points, isLoading } = useGetViewportPoints({
-    lat1: Number(bounds.lat1),
-    lng1: Number(bounds.lng1),
-    lat2: Number(bounds.lat2),
-    lng2: Number(bounds.lng2),
+    ...bounds,
   });
-
-  console.log("Points", points);
 
   if (isLoading) {
     return (
@@ -58,8 +57,8 @@ export default function ViewportPoints() {
       <Map
         ref={mapRef}
         initialViewState={{
-          longitude: Number(points[0].region.geometry.coordinates[0][0][0]),
-          latitude: Number(points[0].region.geometry.coordinates[0][0][1]),
+          longitude: points[0].region.geometry.coordinates[0][0][0],
+          latitude: points[0].region.geometry.coordinates[0][0][1],
           zoom: zoom,
         }}
         minZoom={minZoomOut}
@@ -69,16 +68,9 @@ export default function ViewportPoints() {
           margin: "12px",
           borderRadius: "8px",
         }}
-        // onMoveEnd={() => {}}
         onLoad={() => {
           if (geoControlRef.current) {
             geoControlRef.current.trigger();
-            setUserLatitude(
-              String(geoControlRef.current._lastKnownPosition.coords.latitude)
-            );
-            setUserLongitude(
-              String(geoControlRef.current._lastKnownPosition.coords.longitude)
-            );
           }
         }}
         onZoomEnd={() => {
@@ -87,23 +79,18 @@ export default function ViewportPoints() {
           const lng1 = mapRef.current.getBounds()._ne.lng;
           const lat2 = mapRef.current.getBounds()._sw.lat;
           const lng2 = mapRef.current.getBounds()._sw.lng;
+
           setBounds({ lat1, lng1, lat2, lng2 });
           setZoom(zoom);
         }}
         interactive={true}
         mapStyle="https://api.maptiler.com/maps/streets-v2/style.json?key=PxNXKzROtyvsq6oE4YKN"
       >
-        {/* <GeolocateControl
-        ref={geoControlRef}
-        trackUserLocation={true}
-        showUserHeading={true}
-      /> */}
-
         {points?.map((point) => (
           <Marker
             key={point.id + Math.random()}
-            latitude={Number(point.region.geometry.coordinates[0][0][1])}
-            longitude={Number(point.region.geometry.coordinates[0][0][0])}
+            latitude={point.region.geometry.coordinates[0][0][1]}
+            longitude={point.region.geometry.coordinates[0][0][0]}
             color="red"
           />
         ))}

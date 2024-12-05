@@ -1,8 +1,5 @@
 import { Feature, Polygon, Geometry, Point as GeoJSONPoint } from 'geojson';
 
-/**
- * Checks if a point is within the bounding box.
- */
 export function isPointInBoundingBox(
   point: Feature<GeoJSONPoint>,
   boundingBox: Feature<Polygon>,

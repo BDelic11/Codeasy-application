@@ -47,7 +47,6 @@ export class PointsService {
       properties: {},
     };
 
-    // get cached points
     let cachedAllPoints =
       await this.cacheManager.get<Point[]>('viewportPoints');
 
@@ -68,7 +67,6 @@ export class PointsService {
     const geoJSONPoints = convertToGeoJSON(cachedAllPoints);
     console.log('geoJSONPoints', geoJSONPoints.features.length);
 
-    // load points into the tree
     if (
       !this.currentBoundingBox ||
       this.currentBoundingBox === newBoundingBox
@@ -82,7 +80,6 @@ export class PointsService {
 
     this.currentBoundingBox = newBoundingBox;
 
-    // query points within the viewport
     const pointsInViewport = this.index.search(newBoundingBox);
     console.log('pointsInViewport', pointsInViewport.features.length);
     return pointsInViewport.features.map(

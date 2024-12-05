@@ -10,6 +10,7 @@ export const api = axios.create({
 type ErrorResponse = AxiosError & {
   response: {
     data: {
+      message: string;
       error: string;
     };
   };
@@ -17,7 +18,8 @@ type ErrorResponse = AxiosError & {
 
 api.interceptors.response.use(
   (response) => response.data,
-  (error: ErrorResponse) => {
-    return Promise.reject(error.response.data.error);
+  async (error: ErrorResponse) => {
+    if (error.response) return Promise.reject(error.response.data.error);
+    return Promise.reject(error.message);
   }
 );

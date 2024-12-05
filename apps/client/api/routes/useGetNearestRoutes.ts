@@ -4,26 +4,28 @@ import { QueryOptions, useQuery } from "react-query";
 
 import { api } from "..";
 
-const getNearestRoutes = async (nearestDto: any): Promise<any[]> => {
-  const { lat, lon, count } = nearestDto;
-  return await api.get<never, any[]>(`/routes/nearest`, {
+const getNearestRoutes = async (
+  nearestDto: FindNearestRoutesDto
+): Promise<Route[]> => {
+  const { lat, lng, count } = nearestDto;
+  return await api.get<never, Route[]>(`/routes/findNearestRoutes`, {
     params: {
       lat,
-      lon,
+      lng,
       count,
     },
   });
 };
 
 export const useGetNearestRoutes = (
-  dto: any,
+  dto: FindNearestRoutesDto,
   options?: QueryOptions<Route[]>
 ) => {
   return useQuery(
-    ["routes", "nearest", dto.lat, dto.lon, dto.count],
+    ["routes", "findNearestRoutes", dto.lat, dto.lng, dto.count],
     () => getNearestRoutes(dto),
     {
-      enabled: !!dto.lat && !!dto.lon && !!dto.count,
+      enabled: !!dto.lat && !!dto.lng && !!dto.count,
       ...options,
     }
   );

@@ -1,20 +1,15 @@
-// src/GeoLocationMap.js
 "use client";
 
-//mock data
 import { Route } from "../../../api/src/routes/entities/route.entity";
-
-import React, { use, useEffect, useRef } from "react";
-import { Map, GeolocateControl, Popup, useMap } from "react-map-gl/maplibre";
+import React, { useEffect, useRef } from "react";
+import { Map } from "react-map-gl/maplibre";
 import { Marker, Layer, LineLayer, Source } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { FillLayer } from "react-map-gl";
+import { FillLayer, MapRef } from "react-map-gl";
 
 interface GeoLocationMapProps {
-  lat: string;
-  setLatitude: (lat: string) => void;
-  lon: string;
-  setLongitude: (lon: string) => void;
+  lat: number;
+  lon: number;
   routes: Route[];
   selectedLocation: { latitude: number; longitude: number };
 }
@@ -25,13 +20,14 @@ const GeoLocationMap = ({
   routes,
   selectedLocation,
 }: GeoLocationMapProps) => {
-  const initialZoom = 2;
-  const minZoomOut = 0;
+  const INITIAL_ZOOM = 2;
+  const MIN_ZOOM_OUT = 0;
+
   const geoControlRef = useRef<maplibregl.GeolocateControl>();
   const mapRef = useRef<any>(null);
 
   if (!routes) {
-    return <div>No routes near</div>;
+    return <div>No routes near </div>;
   }
 
   useEffect(() => {
@@ -42,10 +38,8 @@ const GeoLocationMap = ({
         essential: true,
       });
     }
-    console.log("Selected location:", selectedLocation);
   }, [selectedLocation]);
 
-  // create geojson from routes
   const createGeoJSONFromRoutes = () => {
     return {
       type: "FeatureCollection",
@@ -80,11 +74,11 @@ const GeoLocationMap = ({
     <Map
       ref={mapRef}
       initialViewState={{
-        longitude: Number(lon),
-        latitude: Number(lat),
-        zoom: initialZoom,
+        longitude: lon,
+        latitude: lat,
+        zoom: INITIAL_ZOOM,
       }}
-      minZoom={minZoomOut}
+      minZoom={MIN_ZOOM_OUT}
       style={{
         width: "70%",
         height: "calc(100vh - 24px)",
@@ -99,57 +93,13 @@ const GeoLocationMap = ({
       interactive={true}
       mapStyle="https://api.maptiler.com/maps/streets-v2/style.json?key=PxNXKzROtyvsq6oE4YKN"
     >
-      {/* <GeolocateControl
-        ref={geoControlRef}
-        trackUserLocation={true}
-        showUserHeading={true}
-      /> */}
-
-      <Marker
-        key={lat}
-        latitude={Number(lat)}
-        longitude={Number(lon)}
-        color="blue"
-      />
+      <Marker key={lat} latitude={lat} longitude={lon} color="blue" />
       <Source id="polygons-source" type="geojson" data={geoJsonData}>
-        {routes.map((route) =>
-          route.pointsOnRoutes.map((point) => (
-            <Layer {...polygonLayer} />
-            // <Marker
-            //   key={point.point.id}
-            //   latitude={Number(
-            //     point.point.region.geometry.coordinates[0][0][1]
-            //   )}
-            //   longitude={Number(
-            //     point.point.region.geometry.coordinates[0][0][0]
-            //   )}
-            //   color="red"
-            // />
-          ))
-        )}
+        {/* @ts-expect-error layer type*/}
+        <Layer {...polygonLayer} />
       </Source>
     </Map>
   );
 };
 
 export default GeoLocationMap;
-
-{
-  /*
-      {selectedLocation && (
-        <Popup
-          longitude={selectedLocation.longitude}
-          latitude={selectedLocation.latitude}
-          closeButton={true}
-          closeOnClick={false}
-          onClose={() => setSelectedLocation(null)} // Close popup
-          anchor="top"
-        >
-          <div>
-            {selectedLocation.description || selectedLocation.city}
-            {/* Show description or fallback 
-          </div>
-        </Popup>
-      )} 
-    */
-}

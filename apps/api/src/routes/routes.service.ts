@@ -1,4 +1,8 @@
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { Route } from './entities/route.entity';
 import { AxiosResponse } from 'axios';
@@ -14,30 +18,32 @@ export class RoutesService {
     private readonly httpService: HttpService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
-  private readonly earthRadius = 6371;
+  private readonly EARTH_RADIUS = 6371;
 
   async fetchAllRoutes(): Promise<Route[]> {
-    const routes = await firstValueFrom(
-      this.httpService
-        .get<Route[]>('https://chat.codeasy.com/api/public/job-application')
-        .pipe(
-          map((response: AxiosResponse<Route[]>) => response.data),
-          tap((data) => {
-            this.cacheManager.set('routes', data, 36000);
-          }),
-        ),
-    );
-
-    if (!routes) {
-      throw new BadRequestException('Error in fetching routes from api');
+    let routes = <Route[]>[];
+    try {
+      routes = await firstValueFrom(
+        this.httpService
+          .get<Route[]>('https://chat.codeasy.com/api/public/job-application')
+          .pipe(
+            map((response: AxiosResponse<Route[]>) => response.data),
+            tap((data) => {
+              this.cacheManager.set('routes', data, 36000);
+            }),
+          ),
+      );
+    } catch (error) {
+      throw new InternalServerErrorException('Error with fetching api');
     }
+
     return routes;
   }
 
   async findNearestRoutes(
     findNearestRoutesDto: FindNearestRoutesDto,
   ): Promise<Route[]> {
-    const { lon, lat, count } = findNearestRoutesDto;
+    const { lng, lat, count } = findNearestRoutesDto;
     let routes: Route[] = (await this.cacheManager.get('routes')) as Route[];
     if (!routes) {
       routes = await this.fetchAllRoutes();
@@ -47,7 +53,7 @@ export class RoutesService {
       const centroid = this.calculateCentroid(route.pointsOnRoutes);
       const computedDistance = this.haversineDistance(
         Number(lat),
-        Number(lon),
+        Number(lng),
         centroid.lat,
         centroid.lng,
       );
@@ -94,6 +100,6 @@ export class RoutesService {
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-    return this.earthRadius * c;
+    return this.EARTH_RADIUS * c;
   }
 }

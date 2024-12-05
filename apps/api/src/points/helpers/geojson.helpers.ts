@@ -1,9 +1,6 @@
 import { FeatureCollection, Feature, Point as GeoJSONPoint } from 'geojson';
 import { Point } from '../entities/point.entity';
 
-/**
- * Converts an array of Points to GeoJSON format.
- */
 export function convertToGeoJSON(
   points: Point[],
 ): FeatureCollection<GeoJSONPoint> {
