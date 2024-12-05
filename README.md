@@ -68,7 +68,7 @@ This repository contains a **Tourist Guide Application**, developed as part of a
 - Implements GeoJSON operations such as filtering points within a bounding box and calculating distances.
 - I also used in memory cache in Nest.js for scalability of application and to avoid calling the API repeatedly if the data hasn't changed. On first time the data is fetched from external API and cached in memory. Every other time the data is used from cached and validated is there still data in cache. 
 - Error handling is done by Class validators using a Validation pipe and it provides a convenient approach to enforce validation rules for all incoming client payloads, where the specific rules are declared with simple annotations in local class/DTO declarations in each module. Also Error handling is done by throwing exeptions like if the data from external API is handled in a right way.
-
+- My focus was on API part in Nest.js which I tested with Postman.
 
 
 ### **Frontend: Next.js**
