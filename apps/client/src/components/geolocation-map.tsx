@@ -3,9 +3,9 @@
 import { Route } from "../../../api/src/routes/entities/route.entity";
 import React, { useEffect, useRef } from "react";
 import { Map } from "react-map-gl/maplibre";
-import { Marker, Layer, LineLayer, Source } from "react-map-gl/maplibre";
+import { Marker, Layer, Source } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { FillLayer, MapRef } from "react-map-gl";
+import { FillLayer } from "react-map-gl";
 
 interface GeoLocationMapProps {
   lat: number;

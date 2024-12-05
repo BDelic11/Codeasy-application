@@ -13,10 +13,10 @@ export const Map = () => {
 
   useEffect(() => {
     var map = new maplibregl.Map({
-      container: mapContainer.current, // container id
+      container: mapContainer.current,
       style:
-        "https://api.maptiler.com/maps/streets-v2/style.json?key=PxNXKzROtyvsq6oE4YKN", // style URL
-      center: [0, 0], // starting position [lng, lat]
+        "https://api.maptiler.com/maps/streets-v2/style.json?key=PxNXKzROtyvsq6oE4YKN",
+      center: [0, 0],
       ...viewState,
     });
     return () => {
@@ -25,6 +25,7 @@ export const Map = () => {
   }, []);
   return (
     <div
+      /* @ts-expect-error layer type*/
       ref={mapContainer}
       className="md:absolute md:right-0  md:w-1/2 md:min-h-[100vh]"
     >

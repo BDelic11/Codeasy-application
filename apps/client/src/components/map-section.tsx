@@ -12,7 +12,7 @@ const MapSection = () => {
   const [userLatitude, setUserLatitude] = useState<number>(0);
   const [userLongitude, setUserLongitude] = useState<number>(0);
   // left as 10 for now, but can be changed to any number wiht set number of routes
-  const [numberOfRoutes, setNumberOfRoutes] = useState(80);
+  const [numberOfRoutes, setNumberOfRoutes] = useState(10);
   const [selectedLocation, setSelectedLocation] = useState<{
     latitude: number;
     longitude: number;
